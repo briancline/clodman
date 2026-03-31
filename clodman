@@ -1,0 +1,19 @@
+#!/bin/bash
+
+mkdir -p ~/.claude
+touch ~/.claude.json
+
+session_name="$(basename "${PWD}")"
+suffix="$(uuidgen --time | cut -d- -f1)"
+
+podman run -i -t --rm \
+    --name "claude-${session_name}-${suffix}" \
+    --hostname claude \
+    --userns=keep-id \
+    -v "${HOME}/.claude.json:/home/claude/.claude.json:rw,z" \
+    -v "${HOME}/.claude:/home/claude/.claude:rw,z" \
+    -v "${HOME}/.kube:/home/claude/.kube:ro,z" \
+    -v "${PWD}:${PWD}:rw,z" \
+    -w "${PWD}" \
+    localhost/claudecode \
+    claude $*
