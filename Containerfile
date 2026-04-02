@@ -3,6 +3,9 @@ FROM fedora:43
 ARG BUILD_DATE
 ARG IMAGE_VER
 # ARG GIT_REF
+ARG CLAUDE_UID
+ARG CLAUDE_GID
+
 LABEL \
     org.opencontainers.image.created="${BUILD_DATE}" \
     org.opencontainers.image.title="claudecode" \
@@ -72,8 +75,8 @@ RUN \
     \
     && uv tool install check-jsonschema
 
-RUN groupadd --gid 1000 claude && \
-    useradd --uid 1000 --gid 1000 --create-home --home-dir /home/claude claude
+RUN groupadd --gid "${CLAUDE_GID}" claude && \
+    useradd --uid "${CLAUDE_UID}" --gid "${CLAUDE_GID}" --create-home --home-dir /home/claude claude
 
 
 

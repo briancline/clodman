@@ -11,6 +11,8 @@ build_date="$(date +%Y-%m-%dT%H:%M:%S%z -d @${build_ts})"
 tag_date="$(date +%Y%m%d.%H%M%S -d @${build_ts})"
 image_ver="${claude_code_ver}.${tag_date}"
 kube_ver="v1.34"
+claude_uid="${UID}"
+claude_gid="$(id -g)"
 
 cat >kubernetes.repo <<EOF
 [kubernetes]
@@ -23,6 +25,7 @@ EOF
 
 echo "Build date:     ${build_date}"
 echo "Image version:  ${image_ver}"
+echo "UID and GID:    ${claude_uid} / ${claude_gid}"
 echo
 
 podman build \
@@ -30,6 +33,8 @@ podman build \
     --tag "claudecode:${image_ver}" \
     --build-arg BUILD_DATE="${build_date}" \
     --build-arg IMAGE_VER="${image_ver}" \
+    --build-arg CLAUDE_UID="${claude_uid}" \
+    --build-arg CLAUDE_GID="${claude_gid}" \
     --unsetlabel org.opencontainers.image.license \
     --unsetlabel org.opencontainers.image.name \
     --unsetlabel name \
